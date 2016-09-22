@@ -20,9 +20,10 @@ public class SimpleGui1 implements ActionListener {
         button = new JButton("Изменить цвет");
         button.addActionListener(this);
 
+        //Создаем панель для рисования
         MyDrawPanel drawPanel = new MyDrawPanel();
 
-        //описание создоваемого окна и добаление в него кнопки
+        //описание создоваемого окна и добаление в него кнопки и панели для рисования
         frame.getContentPane().add(BorderLayout.SOUTH, button);
         frame.getContentPane().add(BorderLayout.CENTER, drawPanel);
         frame.setSize(300,300);
