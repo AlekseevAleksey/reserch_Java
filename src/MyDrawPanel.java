@@ -12,7 +12,7 @@ public class MyDrawPanel extends JPanel{
 
         Color randomColor = new Color(Red,Blue,Green);
         g.setColor(randomColor);
-        g.fillOval(70, 70, 100, 100);
+        g.fillOval(13, 70, 100, 100);
     }
 
 }

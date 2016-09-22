@@ -3,9 +3,12 @@ import java.awt.event.*;
 import java.awt.*;
 
 //реализовываем интерфейс
-public class SimpleGui1 implements ActionListener {
-    JButton button;
+public class SimpleGui1 {
+    JButton buttonColor;
+    JButton buttonLabel;
     JFrame frame;
+    JLabel label;
+    int x;
 
     public static void main (String [] args) {
         SimpleGui1 gui1 = new SimpleGui1();
@@ -16,24 +19,44 @@ public class SimpleGui1 implements ActionListener {
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+
         //Создаем кноаку и регистрируем слушатель
-        button = new JButton("Изменить цвет");
-        button.addActionListener(this);
+        buttonColor = new JButton("Изменить цвет");
+        buttonColor.addActionListener(new ColorListener());
+
+        buttonLabel = new JButton("Измениь label");
+        buttonLabel.addActionListener(new LabelListener());
 
         //Создаем панель для рисования
         MyDrawPanel drawPanel = new MyDrawPanel();
 
+        //
+        label = new JLabel("Label 0");
+
         //описание создоваемого окна и добаление в него кнопки и панели для рисования
-        frame.getContentPane().add(BorderLayout.SOUTH, button);
+        frame.getContentPane().add(BorderLayout.SOUTH, buttonColor);
+        frame.getContentPane().add(BorderLayout.EAST, buttonLabel);
         frame.getContentPane().add(BorderLayout.CENTER, drawPanel);
-        frame.setSize(300,300);
+        frame.getContentPane().add(BorderLayout.WEST, label);
+        frame.setSize(500,300);
         frame.setVisible(true);
     }
 
-    //реализация метода обработки события
-    @Override
-    public void actionPerformed(ActionEvent e) {
+    class LabelListener implements ActionListener {
 
-        frame.repaint();
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            x = (int) (Math.random() * 7);
+            label.setText("new label " + x);
+        }
+    }
+
+    class ColorListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            frame.repaint();
+        }
     }
 }
