@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.ArrayList;
 
 public class BeatBox {
@@ -48,6 +49,14 @@ public class BeatBox {
         JButton downTempo = new JButton("Tempo Down");
         downTempo.addActionListener(new MyDownTempoListener());
         buttonBox.add(downTempo);
+
+        JButton serializelt = new JButton("serializelt");
+        serializelt.addActionListener(new MySendListener());
+        buttonBox.add(serializelt);
+
+        JButton restore = new JButton("restore");
+        restore.addActionListener(new MyReadInListener());
+        buttonBox.add(restore);
 
         //create label with the name of the instrumental
         Box nameBox = new Box(BoxLayout.Y_AXIS);
@@ -200,5 +209,86 @@ public class BeatBox {
             e.printStackTrace();
         }
         return event;
+    }
+
+    //listener open save window
+    public class MySendListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            JFileChooser fileSave = new JFileChooser();
+            fileSave.showSaveDialog(theFrame);
+            saveFile(fileSave.getSelectedFile());
+        }
+    }
+
+    /**
+     * save status checkbox in file
+     * @param file it contains the path to the file
+     */
+    public void saveFile (File file) {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            boolean [] checkboxState = new boolean[256];
+
+            for (int i=0;i<256;i++) {
+                JCheckBox checkBox = (JCheckBox) checkBoxList.get(i);
+                if (checkBox.isSelected()) {
+                    checkboxState[i] = true;
+                    writer.write(checkboxState[i] + "\n");
+                } else {
+                    checkboxState[i] = false;
+                    writer.write(checkboxState[i] + "\n");
+                }
+
+            }
+            writer.close();
+        }catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+
+    //listener open dialog window for load file
+    public class MyReadInListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            JFileChooser fileOpen = new JFileChooser();
+            fileOpen.showOpenDialog(theFrame);
+            loadFile(fileOpen.getSelectedFile());
+        }
+    }
+
+    /**
+     * the status of the uploaded file recovery
+     * @param file it contains the path to the file
+     */
+    public void loadFile (File file) {
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            int i = 0;
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                boolean checkboxState = Boolean.parseBoolean(line);
+                JCheckBox check = (JCheckBox) checkBoxList.get(i);
+
+                if (checkboxState){
+                    check.setSelected(true);
+                } else {
+                    check.setSelected(false);
+                }
+                i++;
+            }
+            reader.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        sequencer.stop();
+        buildTrackAndStart();
     }
 }
